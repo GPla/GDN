@@ -1,0 +1,23 @@
+{
+    "etarp/eTaR": 0.6206904503512033,
+    "etarp/eTaRd": 0.6219512195121951,
+    "etarp/eTaRp": 0.6194296811902115,
+    "etarp/eTaP": 0.8725819230748125,
+    "etarp/eTaPd": 0.9999999993535107,
+    "etarp/eTaPp": 0.7451638467961144,
+    "etarp/Detected_Anomalies": 51,
+    "etarp/Correct_Predictions": 8,
+    "etarp/f1": 0.7253911294464708,
+    "etarp/False Alarm": 0,
+    "etarp/N False Alarm": 0,
+    "etarp/precision": 0.7440828402366864,
+    "etarp/recall": 0.8218954248366013,
+    "etarp/point_adjust_precision": 0.7443097842151937,
+    "etarp/point_adjust_recall": 0.822875816993464,
+    "etarp/point_adjust_f1": 0.7816234674288841,
+    "etarp/segments": 0.6219512195121951,
+    "etarp/n_anomalies": 82,
+    "precision": 0.8218954248366013,
+    "recall": 0.7440828402366864,
+    "f1": 0.781055900621118
+}

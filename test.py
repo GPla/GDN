@@ -17,7 +17,6 @@ from util.data import *
 from util.preprocess import *
 
 
-
 def test(model, dataloader):
     # test
     loss_func = nn.MSELoss(reduction='mean')

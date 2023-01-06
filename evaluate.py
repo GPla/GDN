@@ -1,7 +1,10 @@
 from util.data import *
 import numpy as np
 from sklearn.metrics import precision_score, recall_score, roc_auc_score, f1_score
-
+from util.eval import metrics, _etarp
+from util.misc import clean_dict
+import pandas as pd
+import json
 
 def get_full_err_scores(test_result, val_result):
     np_test_result = np.array(test_result)
@@ -126,7 +129,7 @@ def get_val_performance_data(total_err_scores, normal_scores, gt_labels, topk=1)
     return f1, pre, rec, auc_score, thresold
 
 
-def get_best_performance_data(total_err_scores, gt_labels, topk=1):
+def get_best_performance_data(total_err_scores, gt_labels, topk=1, path=''):
 
     total_features = total_err_scores.shape[0]
 
@@ -154,6 +157,22 @@ def get_best_performance_data(total_err_scores, gt_labels, topk=1):
     rec = recall_score(gt_labels, pred_labels)
 
     auc_score = roc_auc_score(gt_labels, total_topk_err_scores)
+
+    results = _etarp(pred_labels, gt_labels)
+    results = {
+        **results,
+        'precision': pre,
+        'recall': rec,
+        'f1': ((2 * pre * rec) /(pre + rec))
+    }   
+    pd.DataFrame({
+        'y': gt_labels,
+         'y_hat': pred_labels
+    }).to_csv(f'{path}/preds.csv', sep=';', index=False)
+    with open(f'{path}/results.json', 'w') as f:
+            json.dump(clean_dict(results), f)
+
+    print(clean_dict(results))
 
     return max(final_topk_fmeas), pre, rec, auc_score, thresold
 

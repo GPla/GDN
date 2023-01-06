@@ -41,8 +41,28 @@ class Main():
         self.datestr = None
 
         dataset = self.env_config['dataset'] 
-        train_orig = pd.read_csv(f'./data/{dataset}/train.csv', sep=',', index_col=0)
-        test_orig = pd.read_csv(f'./data/{dataset}/test.csv', sep=',', index_col=0)
+        host = self.env_config['host'] 
+        train_orig = pd.read_csv(
+            f'./data/{dataset}/train/machine-{host}.csv', 
+            sep=',', 
+            index_col=None,
+            header=0
+        )
+        test_orig = pd.read_csv(
+            f'./data/{dataset}/test/machine-{host}.csv', 
+            sep=',', 
+            index_col=None,
+            header=0
+        )
+        y = pd.read_csv(
+            f'./data/{dataset}/test_label/machine-{host}.csv', 
+            sep=',', 
+            index_col=None,
+            header=0
+        )
+        y.columns = ['attack']
+
+        test_orig = pd.concat([test_orig, y], axis=1)
        
         train, test = train_orig, test_orig
 
@@ -51,6 +71,7 @@ class Main():
 
         feature_map = get_feature_map(dataset)
         fc_struc = get_fc_graph_struc(dataset)
+
 
         set_device(env_config['device'])
         self.device = get_device()
@@ -105,6 +126,7 @@ class Main():
         else:
             model_save_path = self.get_save_path()[0]
 
+
             self.train_log = train(self.model, model_save_path, 
                 config = train_config,
                 train_dataloader=self.train_dataloader,
@@ -157,7 +179,7 @@ class Main():
     
         test_scores, normal_scores = get_full_err_scores(test_result, val_result)
 
-        top1_best_info = get_best_performance_data(test_scores, test_labels, topk=1) 
+        top1_best_info = get_best_performance_data(test_scores, test_labels, topk=1, path=self.get_save_path()[0].rsplit('/', 1)[0]) 
         top1_val_info = get_val_performance_data(test_scores, normal_scores, test_labels, topk=1)
 
 
@@ -180,7 +202,7 @@ class Main():
         
         if self.datestr is None:
             now = datetime.now()
-            self.datestr = now.strftime('%m|%d-%H:%M:%S')
+            self.datestr = now.strftime('%m-%d-%H_%M_%S')
         datestr = self.datestr          
 
         paths = [
@@ -205,6 +227,7 @@ if __name__ == "__main__":
     parser.add_argument('-slide_stride', help='slide_stride', type = int, default=5)
     parser.add_argument('-save_path_pattern', help='save path pattern', type = str, default='')
     parser.add_argument('-dataset', help='wadi / swat', type = str, default='wadi')
+    parser.add_argument('-host', help='host', type = str, default='1-1')
     parser.add_argument('-device', help='cuda / cpu', type = str, default='cuda')
     parser.add_argument('-random_seed', help='random seed', type = int, default=0)
     parser.add_argument('-comment', help='experiment comment', type = str, default='')
@@ -246,6 +269,7 @@ if __name__ == "__main__":
     env_config={
         'save_path': args.save_path_pattern,
         'dataset': args.dataset,
+        'host': args.host,
         'report': args.report,
         'device': args.device,
         'load_model_path': args.load_model_path

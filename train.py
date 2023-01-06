@@ -25,7 +25,6 @@ def loss_func(y_pred, y_true):
 
 
 def train(model = None, save_path = '', config={},  train_dataloader=None, val_dataloader=None, feature_map={}, test_dataloader=None, test_dataset=None, dataset_name='swat', train_dataset=None):
-
     seed = config['seed']
 
     optimizer = torch.optim.Adam(model.parameters(), lr=0.001, weight_decay=config['decay'])
